@@ -2,9 +2,23 @@ import { schema, rules } from "@ioc:Adonis/Core/Validator";
 import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 
 export default class VideoValidator {
+  public async updateVideoValidator(ctx: HttpContextContract) {
+    return await ctx.request.validate({
+      data: { ...ctx.request.all(), id: ctx.params.id },
 
+      schema: schema.create({
+        id: schema.string({}, [rules.uuid()]),
+        title: schema.string.optional({}, [rules.maxLength(255), rules.minLength(1)]),
+      }),
+      messages: {
+        "id.required": "Video ID is required",
+        "title.maxLength": "Title must not exceed 255 characters",
+        "title.minLength": "Title must be at least 1 character long"
+      },
+    });
+  }
 
-    public async createVideoValidator(ctx: HttpContextContract) {
+  public async createVideoValidator(ctx: HttpContextContract) {
     return await ctx.request.validate({
       schema: schema.create({
         url: schema.string([
@@ -18,7 +32,6 @@ export default class VideoValidator {
           rules.maxLength(2048),
           rules.minLength(1),
         ]),
-        collectionId: schema.string.optional([rules.uuid()]),
       }),
       messages: {
         "url.required": "The video URL is required",
@@ -28,30 +41,9 @@ export default class VideoValidator {
         "title.string": "The video title must be a valid string",
         "title.minLength": "The video title must be at least 1 character long",
         "title.maxLength": "The video title must not exceed 255 characters",
-
-        "collectionId.string": "Collection ID must be a valid string",
-        "collectionId.uuid": "Collection ID must be a valid UUID format",
       },
     });
   }
-
-
-
-  public async updateVideoValidator(ctx: HttpContextContract) {
-    return await ctx.request.validate({
-      data: { ...ctx.request.all(), id: ctx.params.id },
-
-      schema: schema.create({
-        id: schema.string({}, [rules.uuid()]),
-        title: schema.string.optional({}, [rules.maxLength(255)]),
-      }),
-      messages: {
-        "id.required": "Video ID is required",
-        "title.maxLength": "Title must not exceed 255 characters",
-      },
-    });
-  }
-
 
   public async videoIdValidator(ctx: HttpContextContract) {
     return await ctx.request.validate({

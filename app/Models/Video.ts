@@ -19,7 +19,6 @@ export default class Video extends BaseModel {
   @column({ columnName: 'processing_status' })
   public processingStatus: number
 
-  @column({ columnName: 'metadata', serialize: (value) => JSON.stringify(value),
-     prepare: (value) => JSON.stringify(value) })
-  public metadata: any
+  @column({ columnName: 'playable_link' })
+  public playableLink: string
 }
