@@ -20,5 +20,5 @@ export default class Video extends BaseModel {
   public processingStatus: number
 
   @column({ columnName: 'playable_link' })
-  public playableLink: string
+  public playableLink: string | null
 }

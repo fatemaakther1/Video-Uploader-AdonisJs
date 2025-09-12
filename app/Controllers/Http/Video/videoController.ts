@@ -1,54 +1,59 @@
 import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
-import videoService from "./videoService";
+import VideoService from "./videoService";
 import VideoValidator from "./videoValidator";
+import Env from "@ioc:Adonis/Core/Env";
+
+interface BunnyHeaders {
+  AccessKey: string;
+  "Content-Type": string;
+}
 
 export default class VideoController {
-  private service: videoService;
+  private service: VideoService;
   private validator: VideoValidator;
-  
+  private headers: BunnyHeaders;
+
   constructor() {
-    this.service = new videoService();
+    this.service = new VideoService();
     this.validator = new VideoValidator();
+    this.headers = {
+      AccessKey: Env.get("APP_KEY"),
+      "Content-Type": "application/json"
+    };
   }
 
-  //get all video
-  public async getAllVideo() {
-    return await this.service.getAllVideo();
+  public async list() {
+    return await this.service.getAll();
   }
 
-  //get single video
-  public async getSingleVideo(ctx: HttpContextContract) {
-    const validatedData = await this.validator.videoIdValidator(ctx);
-    const getResult = await this.service.getSingleVideo(validatedData);
-    return ctx.response.status(200).json({ getResult });
+  public async show(ctx: HttpContextContract) {
+    const validatedData = await this.validator.validateId(ctx);
+    const result = await this.service.findById(validatedData.id);
+    return ctx.response.status(200).json(result);
   }
 
-  //upload video
-  public async createVideo(ctx: HttpContextContract) {
-    const validatedData = await this.validator.createVideoValidator(ctx);
-    const uploadResult = await this.service.createVideo(validatedData);
-    return ctx.response.status(201).json(uploadResult);
+  public async store(ctx: HttpContextContract) {
+    const validatedData = await this.validator.validateCreate(ctx);
+    console.log(validatedData);
+    const result = await this.service.create(validatedData, this.headers);
+    return ctx.response.status(201).json(result);
   }
 
-  //update video
-  public async updateVideo(ctx: HttpContextContract) {
-    const validatedData = await this.validator.updateVideoValidator(ctx);
-    const updateResult = await this.service.updateVideo(validatedData);
-    return ctx.response.status(200).json({ success: updateResult });
+  public async update(ctx: HttpContextContract) {
+    const validatedData = await this.validator.validateUpdate(ctx);
+    const result = await this.service.update(validatedData, this.headers);
+    return ctx.response.status(200).json({ success: result });
   }
 
-  //delete video
-  public async deleteVideo(ctx: HttpContextContract) {
-    const validatedData = await this.validator.videoIdValidator(ctx);
-    const deleteResult = await this.service.deleteVideo(validatedData);
-    return ctx.response.status(200).json(deleteResult);
+  public async destroy(ctx: HttpContextContract) {
+    const validatedData = await this.validator.validateId(ctx);
+    const result = await this.service.delete(validatedData.id, this.headers);
+    return ctx.response.status(200).json(result);
   }
 
-  //webhook for checking the status of the video
-  public async bunnyWebhook(ctx: HttpContextContract) {
-    console.log(ctx.request.all());
-    const validatedData = await this.validator.webhookValidator(ctx);
-    const response = await this.service.updateVideoStatus(validatedData);
-    return ctx.response.status(200).json({ response });
+  public async webhook(ctx: HttpContextContract) {
+    const validatedData = await this.validator.validateWebhook(ctx);
+    const result = await this.service.updateStatus(validatedData);
+    return ctx.response.status(200).json(result);
   }
 }
