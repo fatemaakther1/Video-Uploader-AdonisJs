@@ -170,6 +170,79 @@ export default class ExceptionHandler extends HttpExceptionHandler {
     }
 
     /**
+     * 📚 Learning Controller Specific Errors
+     */
+    if (error.code === 'E_LEARNING_SAMPLE_DATA_FAILED') {
+      return response.status(500).json({
+        success: false,
+        message: 'Failed to create sample data',
+        error_code: 'SAMPLE_DATA_CREATION_FAILED',
+        statusCode: 500,
+        details: isDevelopment ? error.message : undefined
+      })
+    }
+
+    if (error.code === 'E_LEARNING_HASONE_FAILED') {
+      return response.status(500).json({
+        success: false,
+        message: 'hasOne examples failed',
+        error_code: 'HASONE_EXAMPLES_FAILED',
+        statusCode: 500,
+        details: isDevelopment ? error.message : undefined
+      })
+    }
+
+    if (error.code === 'E_LEARNING_HASMANY_FAILED') {
+      return response.status(500).json({
+        success: false,
+        message: 'hasMany examples failed',
+        error_code: 'HASMANY_EXAMPLES_FAILED',
+        statusCode: 500,
+        details: isDevelopment ? error.message : undefined
+      })
+    }
+
+    if (error.code === 'E_LEARNING_BELONGSTO_FAILED') {
+      return response.status(500).json({
+        success: false,
+        message: 'belongsTo examples failed',
+        error_code: 'BELONGSTO_EXAMPLES_FAILED',
+        statusCode: 500,
+        details: isDevelopment ? error.message : undefined
+      })
+    }
+
+    if (error.code === 'E_LEARNING_MANYTOMANY_FAILED') {
+      return response.status(500).json({
+        success: false,
+        message: 'manyToMany examples failed',
+        error_code: 'MANYTOMANY_EXAMPLES_FAILED',
+        statusCode: 500,
+        details: isDevelopment ? error.message : undefined
+      })
+    }
+
+    if (error.code === 'E_LEARNING_ADVANCED_QUERIES_FAILED') {
+      return response.status(500).json({
+        success: false,
+        message: 'Advanced queries failed',
+        error_code: 'ADVANCED_QUERIES_FAILED',
+        statusCode: 500,
+        details: isDevelopment ? error.message : undefined
+      })
+    }
+
+    if (error.code === 'E_LEARNING_CLEANUP_FAILED') {
+      return response.status(500).json({
+        success: false,
+        message: 'Failed to cleanup data',
+        error_code: 'DATA_CLEANUP_FAILED',
+        statusCode: 500,
+        details: isDevelopment ? error.message : undefined
+      })
+    }
+
+    /**
      * 📹 Video-specific Application Errors
      */
     if (error.code === 'E_VIDEO_NOT_FOUND') {

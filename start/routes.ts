@@ -20,18 +20,9 @@
 
 import Route from '@ioc:Adonis/Core/Route'
 import '../app/Controllers/Http/Video/videoRoutes'
+import '../app/Controllers/Http/Database Learning/learning-routes'
 
 Route.get('/', async () => {
   return { hello: 'world' }
 })
 
-// Learning routes for testing database relationships
-Route.group(() => {
-  Route.post('/create-sample-data', 'Database Learning/LearningController.createSampleData')
-  Route.get('/has-one-examples', 'Database Learning/LearningController.hasOneExamples')
-  Route.get('/has-many-examples', 'Database Learning/LearningController.hasManyExamples')
-  Route.get('/belongs-to-examples', 'Database Learning/LearningController.belongsToExamples')
-  Route.get('/many-to-many-examples', 'Database Learning/LearningController.manyToManyExamples')
-  Route.get('/advanced-queries', 'Database Learning/LearningController.advancedQueries')
-  Route.delete('/cleanup-data', 'Database Learning/LearningController.cleanupData')
-}).prefix('/api/v1/learning')

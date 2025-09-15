@@ -2,53 +2,45 @@ import Route from '@ioc:Adonis/Core/Route'
 
 /**
  * Learning Routes for AdonisJS Relationships
- * Add these routes to your main routes file (start/routes.ts)
+ * Testing database relationships (@hasOne, @hasMany, @belongsTo, @manyToMany)
  */
 
-// Group all learning routes under /api/learning prefix
+// Learning routes for testing database relationships
 Route.group(() => {
-  
-  // Setup and cleanup routes
-  Route.post('/setup', 'Database Learning/LearningController.createSampleData')
-  Route.delete('/cleanup', 'Database Learning/LearningController.cleanupData')
-  
-  // Relationship example routes
-  Route.get('/has-one', 'Database Learning/LearningController.hasOneExamples')
-  Route.get('/has-many', 'Database Learning/LearningController.hasManyExamples')
-  Route.get('/belongs-to', 'Database Learning/LearningController.belongsToExamples')
-  Route.get('/many-to-many', 'Database Learning/LearningController.manyToManyExamples')
-  Route.get('/advanced', 'Database Learning/LearningController.advancedQueries')
-  
-}).prefix('/api/learning')
+  Route.post('/create-sample-data', 'Database Learning/LearningController.createSampleData')
+  Route.get('/has-one-examples', 'Database Learning/LearningController.hasOneExamples')
+  Route.get('/has-many-examples', 'Database Learning/LearningController.hasManyExamples')
+  Route.get('/belongs-to-examples', 'Database Learning/LearningController.belongsToExamples')
+  Route.get('/many-to-many-examples', 'Database Learning/LearningController.manyToManyExamples')
+  Route.get('/advanced-queries', 'Database Learning/LearningController.advancedQueries')
+  Route.delete('/cleanup-data', 'Database Learning/LearningController.cleanupData')
+}).prefix('/api/v1/learning')
 
-/**
- * COPY THESE ROUTES TO YOUR start/routes.ts FILE:
- * 
- * // Learning Routes for AdonisJS Relationships
- * Route.group(() => {
- *   Route.post('/setup', 'Database Learning/LearningController.createSampleData')
- *   Route.delete('/cleanup', 'Database Learning/LearningController.cleanupData')
- *   Route.get('/has-one', 'Database Learning/LearningController.hasOneExamples')
- *   Route.get('/has-many', 'Database Learning/LearningController.hasManyExamples')
- *   Route.get('/belongs-to', 'Database Learning/LearningController.belongsToExamples')
- *   Route.get('/many-to-many', 'Database Learning/LearningController.manyToManyExamples')
- *   Route.get('/advanced', 'Database Learning/LearningController.advancedQueries')
- * }).prefix('/api/learning')
- */
+
 
 /**
  * HOW TO TEST THE RELATIONSHIPS:
  * 
  * 1. First, create sample data:
- *    POST http://localhost:3333/api/learning/setup
+ *    POST http://localhost:3333/api/v1/learning/create-sample-data
  * 
  * 2. Test different relationship types:
- *    GET http://localhost:3333/api/learning/has-one
- *    GET http://localhost:3333/api/learning/has-many
- *    GET http://localhost:3333/api/learning/belongs-to
- *    GET http://localhost:3333/api/learning/many-to-many
- *    GET http://localhost:3333/api/learning/advanced
+ *    GET http://localhost:3333/api/v1/learning/has-one-examples
+ *    GET http://localhost:3333/api/v1/learning/has-many-examples
+ *    GET http://localhost:3333/api/v1/learning/belongs-to-examples
+ *    GET http://localhost:3333/api/v1/learning/many-to-many-examples
+ *    GET http://localhost:3333/api/v1/learning/advanced-queries
  * 
  * 3. Clean up when done:
- *    DELETE http://localhost:3333/api/learning/cleanup
+ *    DELETE http://localhost:3333/api/v1/learning/cleanup-data
+ * 
+ * EXAMPLES OF WHAT EACH ENDPOINT DEMONSTRATES:
+ * 
+ * - create-sample-data: Creates users, profiles, posts, and tags with relationships
+ * - has-one-examples: User hasOne Profile relationship examples
+ * - has-many-examples: User hasMany Posts relationship examples  
+ * - belongs-to-examples: Post belongsTo User, Profile belongsTo User examples
+ * - many-to-many-examples: Post manyToMany Tags relationship examples
+ * - advanced-queries: Complex queries with nested relationships, counts, etc.
+ * - cleanup-data: Removes all test data from the database
  */
