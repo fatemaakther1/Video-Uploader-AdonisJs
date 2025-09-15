@@ -16,10 +16,10 @@ export default class LearningController {
   // CREATE SAMPLE DATA FOR LEARNING
   // ==============================================
   
-  public async createSampleData({ response }: HttpContextContract) {
-    const data = await this.queries.createSampleData()
+  public async createSampleData(ctx: HttpContextContract) {
+    const data = await this.queries.createSampleData(ctx)
     
-    return response.json({
+    return ctx.response.json({
       message: 'Sample data created successfully!',
       data
     })
@@ -33,10 +33,10 @@ export default class LearningController {
    * Demonstrates @hasOne relationship
    * User hasOne Profile
    */
-  public async hasOneExamples({ response }: HttpContextContract) {
-    const examples = await this.queries.getHasOneExamples()
+  public async hasOneExamples(ctx: HttpContextContract) {
+    const examples = await this.queries.getHasOneExamples(ctx)
     
-    return response.json({
+    return ctx.response.json({
       message: '@hasOne relationship examples',
       examples
     })
@@ -50,10 +50,10 @@ export default class LearningController {
    * Demonstrates @hasMany relationship
    * User hasMany Posts
    */
-  public async hasManyExamples({ response }: HttpContextContract) {
-    const examples = await this.queries.getHasManyExamples()
+  public async hasManyExamples(ctx: HttpContextContract) {
+    const examples = await this.queries.getHasManyExamples(ctx)
     
-    return response.json({
+    return ctx.response.json({
       message: '@hasMany relationship examples',
       examples
     })
@@ -67,10 +67,10 @@ export default class LearningController {
    * Demonstrates @belongsTo relationship
    * Post belongsTo User, Profile belongsTo User
    */
-  public async belongsToExamples({ response }: HttpContextContract) {
-    const examples = await this.queries.getBelongsToExamples()
+  public async belongsToExamples(ctx: HttpContextContract) {
+    const examples = await this.queries.getBelongsToExamples(ctx)
     
-    return response.json({
+    return ctx.response.json({
       message: '@belongsTo relationship examples',
       examples
     })
@@ -84,10 +84,10 @@ export default class LearningController {
    * Demonstrates @manyToMany relationship
    * Post manyToMany Tags
    */
-  public async manyToManyExamples({ response }: HttpContextContract) {
-    const examples = await this.queries.getManyToManyExamples()
+  public async manyToManyExamples(ctx: HttpContextContract) {
+    const examples = await this.queries.getManyToManyExamples(ctx)
     
-    return response.json({
+    return ctx.response.json({
       message: '@manyToMany relationship examples',
       examples
     })
@@ -100,10 +100,10 @@ export default class LearningController {
   /**
    * Advanced relationship queries
    */
-  public async advancedQueries({ response }: HttpContextContract) {
-    const examples = await this.queries.getAdvancedQueryExamples()
+  public async advancedQueries(ctx: HttpContextContract) {
+    const examples = await this.queries.getAdvancedQueryExamples(ctx)
     
-    return response.json({
+    return ctx.response.json({
       message: 'Advanced relationship queries',
       examples
     })
@@ -113,10 +113,10 @@ export default class LearningController {
   // CLEANUP METHOD
   // ==============================================
 
-  public async cleanupData({ response }: HttpContextContract) {
-    await this.queries.cleanupAllData()
+  public async cleanupData(ctx: HttpContextContract) {
+    await this.queries.cleanupAllData(ctx)
     
-    return response.json({
+    return ctx.response.json({
       message: 'All learning data cleaned up successfully!'
     })
   }

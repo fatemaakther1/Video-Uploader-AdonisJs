@@ -3,6 +3,7 @@ import Profile from 'App/Models/Profile'
 import Post from 'App/Models/Post'
 import Tag from 'App/Models/Tag'
 import Database from '@ioc:Adonis/Lucid/Database'
+import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class LearningQueries {
   
@@ -10,7 +11,7 @@ export default class LearningQueries {
   // CREATE SAMPLE DATA OPERATIONS
   // ==============================================
   
-  public async createSampleData() {
+  public async createSampleData(ctx: HttpContextContract) {
     // Create a user
     const user = await User.create({
       email: 'john@example.com',
@@ -92,7 +93,7 @@ export default class LearningQueries {
   // @hasOne RELATIONSHIP OPERATIONS
   // ==============================================
 
-  public async getHasOneExamples() {
+  public async getHasOneExamples(ctx: HttpContextContract) {
     // 1. Load user with profile using preload
     const userWithProfile = await User.query()
       .preload('profile') // Eager loading
@@ -146,7 +147,7 @@ export default class LearningQueries {
   // @hasMany RELATIONSHIP OPERATIONS
   // ==============================================
 
-  public async getHasManyExamples() {
+  public async getHasManyExamples(ctx: HttpContextContract) {
     // 1. Load user with all posts
     const userWithPosts = await User.query()
       .preload('posts') // Load all posts
@@ -210,7 +211,7 @@ export default class LearningQueries {
   // @belongsTo RELATIONSHIP OPERATIONS
   // ==============================================
 
-  public async getBelongsToExamples() {
+  public async getBelongsToExamples(ctx: HttpContextContract) {
     // 1. Load post with its author (user)
     const postWithAuthor = await Post.query()
       .preload('user') // Load the user who created this post
@@ -266,7 +267,7 @@ export default class LearningQueries {
   // @manyToMany RELATIONSHIP OPERATIONS
   // ==============================================
 
-  public async getManyToManyExamples() {
+  public async getManyToManyExamples(ctx: HttpContextContract) {
     // 1. Load post with all its tags
     const postWithTags = await Post.query()
       .preload('tags') // Load all related tags
@@ -364,7 +365,7 @@ export default class LearningQueries {
   // ADVANCED QUERY OPERATIONS
   // ==============================================
 
-  public async getAdvancedQueryExamples() {
+  public async getAdvancedQueryExamples(ctx: HttpContextContract) {
     // 1. Nested relationships (user -> posts -> tags)
     const userWithNestedData = await User.query()
       .preload('profile')
@@ -429,7 +430,7 @@ export default class LearningQueries {
   // CLEANUP OPERATIONS
   // ==============================================
 
-  public async cleanupAllData() {
+  public async cleanupAllData(ctx: HttpContextContract) {
     // Delete in correct order to respect foreign key constraints
     await Database.from('post_tag').del()
     await Tag.query().del()
