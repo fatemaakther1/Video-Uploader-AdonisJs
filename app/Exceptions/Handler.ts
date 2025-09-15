@@ -110,11 +110,32 @@ export default class ExceptionHandler extends HttpExceptionHandler {
      */
     // MySQL specific errors
     if (error.code === 'ER_DUP_ENTRY' || error.errno === 1062) {
+      // Extract field name from error message if possible
+      let message = 'This record already exists in the database'
+      let errorCode = 'DUPLICATE_ENTRY'
+      
+      if (error.sqlMessage) {
+        if (error.sqlMessage.includes('email')) {
+          message = 'This email address is already registered'
+          errorCode = 'EMAIL_ALREADY_EXISTS'
+        } else if (error.sqlMessage.includes('username')) {
+          message = 'This username is already taken'
+          errorCode = 'USERNAME_ALREADY_EXISTS'
+        } else if (error.sqlMessage.includes('slug')) {
+          message = 'This slug already exists'
+          errorCode = 'SLUG_ALREADY_EXISTS'
+        } else if (error.sqlMessage.includes('video')) {
+          message = 'This video already exists in the database'
+          errorCode = 'VIDEO_ALREADY_EXISTS'
+        }
+      }
+      
       return response.status(409).json({
         success: false,
-        message: 'This video already exists in the database',
-        error_code: 'VIDEO_ALREADY_EXISTS',
-        statusCode: 409
+        message: message,
+        error_code: errorCode,
+        statusCode: 409,
+        details: isDevelopment ? error.sqlMessage : undefined
       })
     }
 
@@ -239,6 +260,159 @@ export default class ExceptionHandler extends HttpExceptionHandler {
         error_code: 'DATA_CLEANUP_FAILED',
         statusCode: 500,
         details: isDevelopment ? error.message : undefined
+      })
+    }
+
+    /**
+     * 📋 CRUD Operation Specific Errors
+     */
+    // User errors
+    if (error.code === 'E_ROW_NOT_FOUND' && error.message?.includes('User')) {
+      return response.status(404).json({
+        success: false,
+        message: 'User not found',
+        error_code: 'USER_NOT_FOUND',
+        statusCode: 404
+      })
+    }
+
+    if (error.code === 'E_CRUD_USER_CREATE_FAILED') {
+      return response.status(400).json({
+        success: false,
+        message: 'Failed to create user',
+        error_code: 'USER_CREATE_FAILED',
+        statusCode: 400,
+        details: isDevelopment ? error.message : undefined
+      })
+    }
+
+    if (error.code === 'E_CRUD_USER_UPDATE_FAILED') {
+      return response.status(400).json({
+        success: false,
+        message: 'Failed to update user',
+        error_code: 'USER_UPDATE_FAILED',
+        statusCode: 400,
+        details: isDevelopment ? error.message : undefined
+      })
+    }
+
+    if (error.code === 'E_CRUD_USER_DELETE_FAILED') {
+      return response.status(400).json({
+        success: false,
+        message: 'Failed to delete user',
+        error_code: 'USER_DELETE_FAILED',
+        statusCode: 400,
+        details: isDevelopment ? error.message : undefined
+      })
+    }
+
+    // Profile errors
+    if (error.code === 'E_ROW_NOT_FOUND' && error.message?.includes('Profile')) {
+      return response.status(404).json({
+        success: false,
+        message: 'Profile not found',
+        error_code: 'PROFILE_NOT_FOUND',
+        statusCode: 404
+      })
+    }
+
+    if (error.code === 'E_CRUD_PROFILE_ALREADY_EXISTS') {
+      return response.status(409).json({
+        success: false,
+        message: 'User already has a profile',
+        error_code: 'PROFILE_ALREADY_EXISTS',
+        statusCode: 409
+      })
+    }
+
+    if (error.code === 'E_CRUD_PROFILE_CREATE_FAILED') {
+      return response.status(400).json({
+        success: false,
+        message: 'Failed to create profile',
+        error_code: 'PROFILE_CREATE_FAILED',
+        statusCode: 400,
+        details: isDevelopment ? error.message : undefined
+      })
+    }
+
+    // Post errors
+    if (error.code === 'E_ROW_NOT_FOUND' && error.message?.includes('Post')) {
+      return response.status(404).json({
+        success: false,
+        message: 'Post not found',
+        error_code: 'POST_NOT_FOUND',
+        statusCode: 404
+      })
+    }
+
+    if (error.code === 'E_CRUD_POST_CREATE_FAILED') {
+      return response.status(400).json({
+        success: false,
+        message: 'Failed to create post',
+        error_code: 'POST_CREATE_FAILED',
+        statusCode: 400,
+        details: isDevelopment ? error.message : undefined
+      })
+    }
+
+    // Tag errors
+    if (error.code === 'E_ROW_NOT_FOUND' && error.message?.includes('Tag')) {
+      return response.status(404).json({
+        success: false,
+        message: 'Tag not found',
+        error_code: 'TAG_NOT_FOUND',
+        statusCode: 404
+      })
+    }
+
+    if (error.code === 'E_CRUD_TAG_CREATE_FAILED') {
+      return response.status(400).json({
+        success: false,
+        message: 'Failed to create tag',
+        error_code: 'TAG_CREATE_FAILED',
+        statusCode: 400,
+        details: isDevelopment ? error.message : undefined
+      })
+    }
+
+    if (error.code === 'E_CRUD_TAG_ATTACH_FAILED') {
+      return response.status(400).json({
+        success: false,
+        message: 'Failed to attach tags to post',
+        error_code: 'TAG_ATTACH_FAILED',
+        statusCode: 400,
+        details: isDevelopment ? error.message : undefined
+      })
+    }
+
+    // General CRUD errors
+    if (error.code === 'E_CRUD_SEARCH_FAILED') {
+      return response.status(500).json({
+        success: false,
+        message: 'Search operation failed',
+        error_code: 'SEARCH_FAILED',
+        statusCode: 500,
+        details: isDevelopment ? error.message : undefined
+      })
+    }
+
+    if (error.code === 'E_CRUD_STATS_FAILED') {
+      return response.status(500).json({
+        success: false,
+        message: 'Failed to retrieve statistics',
+        error_code: 'STATS_FAILED',
+        statusCode: 500,
+        details: isDevelopment ? error.message : undefined
+      })
+    }
+
+    // Generic model not found errors
+    if (error.code === 'E_ROW_NOT_FOUND') {
+      return response.status(404).json({
+        success: false,
+        message: 'Record not found',
+        error_code: 'RECORD_NOT_FOUND',
+        statusCode: 404
       })
     }
 
