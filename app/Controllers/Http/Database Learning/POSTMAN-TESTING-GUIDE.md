@@ -141,10 +141,14 @@ One User can have many Posts. Each Post belongs to one User (BELONGS-TO reverse)
 
 ### 3. Get Post with User (BELONGS-TO)
 **GET** `http://localhost:3333/api/v1/learning/post/1/with-user`
-
+//ei post ta (id) here post id kun user e korse tar details dew
 ### 4. Get Published Posts by User
 **GET** `http://localhost:3333/api/v1/learning/user/1/published-posts`
 
+// is published nam e ekta variable ase oita onujai 0 / 1 takbo like post publish kina ota show korbo // eno id oilo user id
+
+
+//etay kam kore nah
 ### 5. Get User Posts Statistics
 **GET** `http://localhost:3333/api/v1/learning/user/1/posts-stats`
 
@@ -251,6 +255,24 @@ await Tag.create({ name: 'Tutorial', color: '#FF6B6B', description: 'Tutorial co
 ### 7. Detach All Tags
 **DELETE** `http://localhost:3333/api/v1/learning/post/1/detach-tags`
 *(No JSON body - will detach all tags)*
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ---
 

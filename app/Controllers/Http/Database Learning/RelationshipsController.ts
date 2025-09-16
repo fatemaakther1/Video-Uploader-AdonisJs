@@ -8,16 +8,6 @@ export default class RelationshipsController {
     this.queries = new RelationshipQueries()
   }
 
-  // ==============================================
-  // ONE-TO-ONE RELATIONSHIP METHODS (User ↔ Profile)
-  // Each User has exactly one Profile
-  // Each Profile belongs to exactly one User
-  // ==============================================
-
-  /**
-   * Create user with profile in one operation
-   * POST /api/v1/learning/create-user-with-profile
-   */
   public async createUserWithProfile(ctx: HttpContextContract) {
     const result = await this.queries.createUserWithProfile(ctx)
     
@@ -29,10 +19,6 @@ export default class RelationshipsController {
     })
   }
 
-  /**
-   * Get user with profile loaded
-   * GET /api/v1/learning/user/:id/with-profile
-   */
   public async getUserWithProfile(ctx: HttpContextContract) {
     const user = await this.queries.getUserWithProfile(ctx)
     
@@ -44,10 +30,6 @@ export default class RelationshipsController {
     })
   }
 
-  /**
-   * Update user profile through relationship
-   * PUT /api/v1/learning/user/:id/update-profile
-   */
   public async updateUserProfile(ctx: HttpContextContract) {
     const profile = await this.queries.updateUserProfile(ctx)
     
@@ -59,16 +41,6 @@ export default class RelationshipsController {
     })
   }
 
-  // ==============================================
-  // ONE-TO-MANY RELATIONSHIP METHODS (User → Posts)
-  // One User can have many Posts
-  // Each Post belongs to one User (BELONGS-TO reverse)
-  // ==============================================
-
-  /**
-   * Create multiple posts for a user
-   * POST /api/v1/learning/user/:userId/create-posts
-   */
   public async createPostsForUser(ctx: HttpContextContract) {
     const result = await this.queries.createPostsForUser(ctx)
     
@@ -80,10 +52,6 @@ export default class RelationshipsController {
     })
   }
 
-  /**
-   * Get user with all posts
-   * GET /api/v1/learning/user/:id/with-posts
-   */
   public async getUserWithPosts(ctx: HttpContextContract) {
     const user = await this.queries.getUserWithPosts(ctx)
     
@@ -98,10 +66,6 @@ export default class RelationshipsController {
     })
   }
 
-  /**
-   * Get post with its user (BELONGS-TO relationship)
-   * GET /api/v1/learning/post/:id/with-user
-   */
   public async getPostWithUser(ctx: HttpContextContract) {
     const post = await this.queries.getPostWithUser(ctx)
     
@@ -113,10 +77,6 @@ export default class RelationshipsController {
     })
   }
 
-  /**
-   * Get published posts by user
-   * GET /api/v1/learning/user/:userId/published-posts
-   */
   public async getPublishedPostsByUser(ctx: HttpContextContract) {
     const result = await this.queries.getPublishedPostsByUser(ctx)
     
@@ -132,17 +92,6 @@ export default class RelationshipsController {
     })
   }
 
-  // ==============================================
-  // MANY-TO-MANY RELATIONSHIP METHODS (Posts ↔ Tags)
-  // One Post can have many Tags
-  // One Tag can be attached to many Posts
-  // Uses pivot table: post_tag with additional columns (sortOrder, isPrimary)
-  // ==============================================
-
-  /**
-   * Attach tags to post with optional pivot data
-   * POST /api/v1/learning/post/:postId/attach-tags
-   */
   public async attachTagsToPost(ctx: HttpContextContract) {
     const post = await this.queries.attachTagsToPost(ctx)
     
@@ -157,10 +106,6 @@ export default class RelationshipsController {
     })
   }
 
-  /**
-   * Get post with all tags and pivot data
-   * GET /api/v1/learning/post/:id/with-tags
-   */
   public async getPostWithTags(ctx: HttpContextContract) {
     const post = await this.queries.getPostWithTags(ctx)
     
@@ -175,10 +120,6 @@ export default class RelationshipsController {
     })
   }
 
-  /**
-   * Get tag with all posts (reverse direction)
-   * GET /api/v1/learning/tag/:id/with-posts
-   */
   public async getTagWithPosts(ctx: HttpContextContract) {
     const tag = await this.queries.getTagWithPosts(ctx)
     
@@ -193,10 +134,6 @@ export default class RelationshipsController {
     })
   }
 
-  /**
-   * Sync tags with post (replace all existing tags)
-   * PUT /api/v1/learning/post/:postId/sync-tags
-   */
   public async syncTagsWithPost(ctx: HttpContextContract) {
     const post = await this.queries.syncTagsWithPost(ctx)
     
@@ -211,10 +148,6 @@ export default class RelationshipsController {
     })
   }
 
-  /**
-   * Detach tags from post
-   * DELETE /api/v1/learning/post/:postId/detach-tags
-   */
   public async detachTagsFromPost(ctx: HttpContextContract) {
     const post = await this.queries.detachTagsFromPost(ctx)
     const tagIds = ctx.request.input('tagIds', [])
@@ -232,90 +165,20 @@ export default class RelationshipsController {
     })
   }
 
-  // ==============================================
-  // ADVANCED RELATIONSHIP QUERY METHODS
-  // Demonstrates complex relationship filtering and aggregation
-  // ==============================================
-
-  /**
-   * Get posts by tag using whereHas
-   * GET /api/v1/learning/posts-by-tag/:tagId
-   */
-  public async getPostsByTag(ctx: HttpContextContract) {
-    const result = await this.queries.getPostsByTag(ctx)
+  public async createSampleTags(ctx: HttpContextContract) {
+    const tags = await this.queries.createSampleTags(ctx)
     
-    return ctx.response.json({
+    return ctx.response.status(201).json({
       success: true,
-      message: `Posts filtered by tag using MANY-TO-MANY relationship with whereHas`,
-      data: {
-        tag: result.tag,
-        posts: result.posts,
-        postsCount: result.posts.length
-      },
-      relationshipType: 'MANY-TO-MANY (Posts ↔ Tags) with whereHas filtering'
-    })
-  }
-
-  /**
-   * Get posts that have ALL specified tags
-   * POST /api/v1/learning/posts-with-all-tags
-   */
-  public async getPostsWithAllTags(ctx: HttpContextContract) {
-    const result = await this.queries.getPostsWithAllTags(ctx)
-    
-    return ctx.response.json({
-      success: true,
-      message: 'Posts with ALL specified tags using MANY-TO-MANY relationship',
-      data: {
-        requiredTagIds: result.requiredTagIds,
-        posts: result.posts,
-        postsCount: result.posts.length
-      },
-      relationshipType: 'MANY-TO-MANY (Posts ↔ Tags) with multiple whereHas (AND condition)'
-    })
-  }
-
-  /**
-   * Get popular tags by post count
-   * GET /api/v1/learning/popular-tags
-   */
-  public async getPopularTags(ctx: HttpContextContract) {
-    const tags = await this.queries.getPopularTags(ctx)
-    
-    return ctx.response.json({
-      success: true,
-      message: 'Popular tags retrieved using MANY-TO-MANY relationship with aggregation',
+      message: 'Sample tags created successfully for MANY-TO-MANY testing',
       data: {
         tags: tags,
-        limit: ctx.request.input('limit', 10)
+        count: tags.length
       },
-      relationshipType: 'MANY-TO-MANY (Tags ↔ Posts) with withCount aggregation'
+      relationshipType: 'MANY-TO-MANY (Posts ↔ Tags) - Sample Data Creation'
     })
   }
 
-  /**
-   * Get user posts statistics
-   * GET /api/v1/learning/user/:userId/posts-stats
-   */
-  public async getUserPostsStats(ctx: HttpContextContract) {
-    const result = await this.queries.getUserPostsStats(ctx)
-    
-    return ctx.response.json({
-      success: true,
-      message: 'User posts statistics using ONE-TO-MANY relationship queries',
-      data: result,
-      relationshipType: 'ONE-TO-MANY (User → Posts) with aggregation (count, sum)'
-    })
-  }
-
-  // ==============================================
-  // CLEANUP & UTILITY METHODS
-  // ==============================================
-
-  /**
-   * Clean all data respecting relationship constraints
-   * DELETE /api/v1/learning/cleanup-all
-   */
   public async cleanupAll(ctx: HttpContextContract) {
     const result = await this.queries.cleanupAll(ctx)
     
